@@ -1,0 +1,15 @@
+R
+.local
+.julia
+node_modules
+.pip
+.ipython
+.cache
+.config
+.butterfly
+.viminfo
+slides
+*.pyc
+.bash_history
+.keras
+.DS_Store
