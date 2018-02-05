@@ -1,4 +1,4 @@
-val dbName = "cdsw"
+val dbName = "basketball"
 
 //********************
 //Copyright 2015 Cloudera (http://www.cloudera.com)
@@ -104,12 +104,12 @@ def bbParse(input: String,bStats: scala.collection.Map[String,Double]=Map.empty,
              statsZ=Array(zfg,zft,tp,trb,ast,stl,blk,tov,pts)
              valueZ = statsZ.reduce(_+_)
              statsN=Array(fgN,ftN,tpN,trbN,astN,stlN,blkN,tovN,ptsN)
-             valueN=statsN.reduce(_+_)   
+             valueN=statsN.reduce(_+_)
          }
-     } 
+     }
      BballData(year, name, position, age, team, gp, gs, mp, stats,statsZ,valueZ,statsN,valueN)
 }
-   
+
 //stat counter class -- need printStats method to print out the stats. Useful for transformations
 class BballStatCounter extends Serializable {
   import org.apache.spark.util.StatCounter
@@ -148,14 +148,14 @@ object BballStatCounter extends Serializable {
 def processStats(stats0:org.apache.spark.rdd.RDD[String],txtStat:Array[String],bStats: scala.collection.Map[String,Double]=Map.empty,zStats: scala.collection.Map[String,Double]=Map.empty)={
     //parse stats
     val stats1=stats0.map(x=>bbParse(x,bStats,zStats))
-    
+
     //group by year
-    val stats2={if(bStats.isEmpty){    
+    val stats2={if(bStats.isEmpty){
                 stats1.keyBy(x=>x.year).map(x=>(x._1,x._2.stats)).groupByKey()
             }else{
                 stats1.keyBy(x=>x.year).map(x=>(x._1,x._2.statsZ)).groupByKey()
             }
-    }    
+    }
 
     //map each stat to StatCounter
     val stats3=stats2.map{case (x,y)=>(x,y.map(a=>a.map(b=>BballStatCounter(b))))}
@@ -287,7 +287,7 @@ val zBroadcastStats=sc.broadcast(zStats)
 val nStats=filteredStats.map(x=>bbParse(x,broadcastStats.value,zBroadcastStats.value))
 
 //map RDD to RDD[Row] so that we can turn it into a dataframe
-val nPlayer = nStats.map(x => Row.fromSeq(Array(x.name,x.year,x.age,x.position,x.team,x.gp,x.gs,x.mp) ++ x.stats ++ x.statsZ ++ Array(x.valueZ) ++ x.statsN ++ Array(x.valueN))) 
+val nPlayer = nStats.map(x => Row.fromSeq(Array(x.name,x.year,x.age,x.position,x.team,x.gp,x.gs,x.mp) ++ x.stats ++ x.statsZ ++ Array(x.valueZ) ++ x.statsN ++ Array(x.valueN)))
 
 //create schema for the data frame
 val schemaN =StructType(
@@ -366,12 +366,12 @@ dfPlayers.write.mode("overwrite").saveAsTable(s"$dbName.Players")
 val pStats=dfPlayers.sort(dfPlayers("name"),dfPlayers("exp") asc).rdd.map(x=>(x.getString(1),(x.getDouble(50),x.getDouble(40),x.getInt(2),x.getInt(3),Array(x.getDouble(31),x.getDouble(32),x.getDouble(33),x.getDouble(34),x.getDouble(35),x.getDouble(36),x.getDouble(37),x.getDouble(38),x.getDouble(39)),x.getInt(0)))).groupByKey()
 pStats.cache
 
-//for each player, go through all the years and calculate the change in valueZ and valueN, save into two lists 
+//for each player, go through all the years and calculate the change in valueZ and valueN, save into two lists
 //one for age, one for experience
 //exclude players who played in 1980 from experience, as we only have partial data for them
 val excludeNames=dfPlayers.filter(dfPlayers("year")===1980).select(dfPlayers("name")).rdd.map(x=>x.mkString).collect.mkString(",")
 
-val pStats1=pStats.map{ case(name,stats) => 
+val pStats1=pStats.map{ case(name,stats) =>
      var last = 0
      var deltaZ = 0.0
      var deltaN = 0.0
