@@ -20,15 +20,15 @@ The workshop environment uses a single set of credentials for all participants. 
 will demonstrate the setup instructions.
 
 1. Review setup.sh but do not execute it.
-2. Review data-processing.scala but do not execute it.
-3. Create a Python Session and run analysis.py
-4. Return to the Scala Session and run machine-learning.scala
-5. When finished, run cleanup.scala in your spark session and cleanup.sh in the terminal
+2. Review setup.scala but do not execute it.
+3. Review data-processing.scala but do not execute it.  The database was created by your instructor.
 
 ## Exercise Tasks
 
 1. Create a Python Session and run analysis.py
 2. Create a Scala Session and run machine-learning.scala
+3. Stop both the Python and Scala sessions.
+3. Review cleanup.scala but do not execute it.
 
 ## Notes
 

@@ -1,4 +1,4 @@
-dbName = "cdsw"
+dbName = "basketball"
 
 ## Create Spark Connection
 
