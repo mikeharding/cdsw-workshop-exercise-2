@@ -9,9 +9,8 @@ This exercise includes an end-to-end spark workflow: data processing, ad-hoc ana
 
 To complete this exercise:
 
-- Perform the Setup Instructions
+- Review the Setup Instructions
 - Perform the Exercise Tasks
-- Create a job
 
 
 ## Setup Instructions
