@@ -131,6 +131,8 @@ for (stat <- statArray){
 
 //add up all individual predictions and save as a table
 val regression_total=spark.sql("select zfg_temp.name, zfg_temp.year, zfg_temp.prediction + zft_temp.prediction as prediction, zfg_temp.label + zft_temp.label as label from zfg_temp, zft_temp where zfg_temp.name=zft_temp.name")
+regression_total.write.mode("overwrite").saveAsTable("basketball.regression_total")
+
 
 //show top 100 predicted players
 spark.sql(s"Select * from $dbName.regression_total order by prediction desc").show(100)
